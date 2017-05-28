@@ -1,0 +1,98 @@
+# webpack 学习记录
+```
+// 全局安装webapck
+npm install -g webpack
+//局部安装webpack,依赖会被写入packagejson
+npm install --save-dev webpack
+mkdir study_webpack
+cd study_webpack
+
+//在创建好的目录内，初始化nodejs 项目
+npm init
+mkdir app
+mkdir public
+touch public/index.html
+vim public/index.html
+touch app/Hello.js
+touch app/Main.js
+vim app/Hello.js
+//webpack 原始构建指令
+//webpack {entry file/入口文件} {构建结果目录/存放bundle.js的地方}
+webpack app/Main.js public/bundle.js
+touch webpack.config.js
+//webpack 默认加载webpack.config.js 配置文件；也可显性指定
+webpack
+webpack webpack.config.js
+```
+
+## 利用npm 引导webapck运行
+```
+package.json
+//npm 需要安装软件配置
+//npm 可以引导webpack 构建任务执行
+
+//在package.json 内scripts节点内配置指令
+"start": "webpack"
+
+运行指令 npm start
+
+```
+
+## 生成 source maps (使得调试容易)
+
+在webpack.config.js 内配置devtool节点；参数根据自己需求选择
+```
+  //配置生成source maps
+  //可选参数：source-map | cheap-module-source-map | eval-source-map | cheap-module-eval-source-map
+  devtool: 'eval-source-map',
+```
+
+## 使用webpack 构建本地服务器
+```
+//全局安装 npm install -g webpack-dev-server
+npm install -g webpack-dev-server
+//项目安装依赖；save-dev 会将webpack-dev-server 依赖自动写入package.json 内部
+npm install --save-dev webpack-dev-server
+
+
+在package.json 内scripts 节点配置 dev 指令
+"dev": " webpack-dev-server --port 7070 --inline --content-base ./public",
+运行 npm run dev 启动服务器
+```
+
+## webpack loaders
+
+1. webpack 通过不同loaders 加载不同loader 对外部格式文件进行处理
+2. loaders 需要单独安装；使用时，需要在webpack.config.js 内部配置modules 节点制定
+      modules节点内；key值说明
+
+      test：一个匹配loaders所处理的文件的拓展名的正则表达式（必须）
+      loader：loader的名称（必须）
+      include/exclude:手动添加必须处理的文件（文件夹）或屏蔽不需要处理的文件（文件夹）（可选）；
+      query：为loaders提供额外的设置选项（可选）
+
+```
+//安装可以装换JSON的loader
+npm install --save-dev json-loader
+```
+
+
+## webpack 插件
+
+在webpack.config.js  文件内增加 plugin 节点
+
+
+HtmlWebpackPlugin 插件;依据一个简单模板，生成一个html5文件
+此文件自动引用了打包之后的 js 文件；每次编译都会插入一个hash值
+
+npm install --save-dev html-webpack-plugin
+
+```
+plugins: [
+  new HtmlWebpackPlugin({
+      template: __dirname + "/app/index.tmpl.html"//new 一个这个插件的实例，并传入相关的参数
+  })
+],
+```
+
+
